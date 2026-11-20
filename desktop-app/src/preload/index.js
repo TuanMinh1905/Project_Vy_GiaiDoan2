@@ -7,6 +7,9 @@ contextBridge.exposeInMainWorld('electron', {
   // Dashboard data
   getDashboardData: (params) => ipcRenderer.invoke('get-dashboard-data', params),
 
+  // Reload database (sau khi pipeline chạy xong)
+  reloadDatabase: () => ipcRenderer.invoke('reload-database'),
+
   // Pipeline control
   runPipeline: (params) => ipcRenderer.invoke('run-pipeline', params),
   onPipelineProgress: (callback) => {
@@ -26,4 +29,3 @@ contextBridge.exposeInMainWorld('electron', {
   // Utilities
   openFolder: (path) => ipcRenderer.invoke('open-folder', path),
 })
-

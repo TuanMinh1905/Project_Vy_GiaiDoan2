@@ -1,151 +1,100 @@
 #!/usr/bin/env python3
 """
 02_bronze_to_silver.py
-Stage: MinIO Bronze → MinIO Silver
-Làm sạch, chuẩn hóa và validate data
+Stage: Bronze (CSV thô) -> Silver (Parquet đã làm sạch, đúng kiểu dữ liệu)
+
+Làm sạch: bỏ trùng theo khóa chính, ép kiểu số/ngày, chuẩn hóa % -> số thực,
+bỏ dòng thiếu khóa, loại bản ghi mồ côi (item không có sale, sale không có customer...).
 """
 import logging
 import sys
-import io
-import pandas as pd
 from pathlib import Path
-from datetime import datetime
 
-logger = logging.getLogger(__name__)
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from lake import Lake  # noqa: E402
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-MINIO_ENDPOINT   = 'localhost:9000'
-MINIO_ACCESS_KEY = 'minioadmin'
-MINIO_SECRET_KEY = 'minioadmin'
-BRONZE_BUCKET    = 'bronze'
-SILVER_BUCKET    = 'silver'
+BRONZE, SILVER = 'bronze', 'silver'
+PREFIX = 'latest/dataset_fashion_store_'
 
-# Mapping tên file → tên bảng + xử lý tương ứng
-TABLE_CONFIG = {
-    'dataset_fashion_store_customers.csv': {
-        'table': 'customers',
-        'required_cols': ['customer_id', 'name', 'email', 'gender', 'age', 'country', 'registration_date'],
-        'date_cols': ['registration_date'],
-    },
-    'dataset_fashion_store_products.csv': {
-        'table': 'products',
-        'required_cols': ['product_id', 'name', 'category', 'brand', 'color', 'size', 'price', 'cost'],
-        'date_cols': [],
-    },
-    'dataset_fashion_store_sales.csv': {
-        'table': 'orders',
-        'required_cols': ['order_id', 'customer_id', 'order_date', 'status', 'sales_channel'],
-        'date_cols': ['order_date'],
-    },
-    'dataset_fashion_store_salesitems.csv': {
-        'table': 'order_items',
-        'required_cols': ['order_item_id', 'order_id', 'product_id', 'quantity', 'unit_price'],
-        'date_cols': [],
-    },
-    'dataset_fashion_store_channels.csv': {
-        'table': 'channels',
-        'required_cols': [],
-        'date_cols': [],
-    },
-    'dataset_fashion_store_campaigns.csv': {
-        'table': 'campaigns',
-        'required_cols': [],
-        'date_cols': ['start_date', 'end_date'],
-    },
-    'dataset_fashion_store_stock.csv': {
-        'table': 'stock',
-        'required_cols': [],
-        'date_cols': [],
-    },
+# table: (file, primary key, numeric cols, date cols, percent cols)
+TABLES = {
+    'customers':  ('customers',  ['customer_id'], ['customer_id'], ['signup_date'], []),
+    'products':   ('products',   ['product_id'],
+                   ['product_id', 'catalog_price', 'cost_price'], [], []),
+    'sales':      ('sales',      ['sale_id'],
+                   ['sale_id', 'discounted', 'total_amount', 'customer_id'], ['sale_date'], []),
+    'sale_items': ('salesitems', ['item_id'],
+                   ['item_id', 'sale_id', 'product_id', 'quantity', 'original_price', 'unit_price',
+                    'discount_applied', 'discounted', 'item_total'], ['sale_date'], ['discount_percent']),
+    'channels':   ('channels',   ['channel'], [], [], []),
+    'campaigns':  ('campaigns',  ['campaign_id'], ['campaign_id'], ['start_date', 'end_date'], []),
+    'stock':      ('stock',      ['country', 'product_id'], ['product_id', 'stock_quantity'], [], []),
 }
 
 
-def get_minio_client():
-    from minio import Minio
-    return Minio(MINIO_ENDPOINT, access_key=MINIO_ACCESS_KEY, secret_key=MINIO_SECRET_KEY, secure=False)
+def to_number_percent(s: pd.Series) -> pd.Series:
+    """'30.00%' -> 0.30"""
+    return pd.to_numeric(s.astype(str).str.replace('%', '', regex=False).str.strip(), errors='coerce') / 100
 
 
-def read_csv_from_minio(client, bucket, object_name) -> pd.DataFrame:
-    response = client.get_object(bucket, object_name)
-    return pd.read_csv(io.BytesIO(response.read()))
-
-
-def clean_dataframe(df: pd.DataFrame, config: dict) -> pd.DataFrame:
-    """Làm sạch chuẩn: drop dupes, parse dates, strip strings"""
-    # Drop duplicates
+def clean(df: pd.DataFrame, pk, num_cols, date_cols, pct_cols) -> pd.DataFrame:
+    df = df.copy()
+    df.columns = [c.strip().lower() for c in df.columns]
+    for c in df.select_dtypes(include=['object', 'string']).columns:
+        df[c] = df[c].astype('string').str.strip()
+    for c in num_cols:
+        df[c] = pd.to_numeric(df[c], errors='coerce')
+    for c in date_cols:
+        df[c] = pd.to_datetime(df[c], errors='coerce')
+    for c in pct_cols:
+        df[c] = to_number_percent(df[c])
     before = len(df)
-    df = df.drop_duplicates()
-    after = len(df)
-    if before != after:
-        logger.info(f"  Xoa {before - after} ban ghi trung lap")
-
-    # Parse date columns
-    for col in config.get('date_cols', []):
-        if col in df.columns:
-            df[col] = pd.to_datetime(df[col], errors='coerce')
-
-    # Strip string columns
-    str_cols = df.select_dtypes(include='object').columns
-    for col in str_cols:
-        df[col] = df[col].str.strip()
-
-    # Drop rows missing required cols
-    required = config.get('required_cols', [])
-    if required:
-        existing_required = [c for c in required if c in df.columns]
-        rows_before = len(df)
-        df = df.dropna(subset=existing_required)
-        dropped = rows_before - len(df)
-        if dropped > 0:
-            logger.info(f"  Xoa {dropped} ban ghi thieu truong bat buoc")
-
+    df = df.dropna(subset=pk).drop_duplicates(subset=pk, keep='first')
+    if len(df) != before:
+        logger.info(f"    bo {before - len(df)} dong trung/thieu khoa")
     return df
 
 
-def upload_parquet(client, df: pd.DataFrame, bucket: str, object_name: str):
-    """Lưu dưới dạng Parquet (hiệu quả hơn CSV)"""
-    from minio import Minio
-    buffer = io.BytesIO()
-    df.to_parquet(buffer, index=False)
-    buffer.seek(0)
-    size = buffer.getbuffer().nbytes
-    client.put_object(bucket, object_name, buffer, size, content_type='application/octet-stream')
-
-
 def main():
-    logger.info("=== STAGE 2: Bronze → Silver ===")
+    logger.info("=== STAGE 2: Bronze -> Silver ===")
+    lake = Lake()
+    tables = {}
+    for name, (file, pk, num, dates, pct) in TABLES.items():
+        raw = lake.get_csv(BRONZE, f'{PREFIX}{file}.csv')
+        tables[name] = clean(raw, pk, num, dates, pct)
+        logger.info(f"  {name}: {len(raw)} -> {len(tables[name])} dong")
 
-    try:
-        client = get_minio_client()
+    # Campaign discount_value: '10.00%' (Percentage) hoặc '10' (Fixed, EUR)
+    cp = tables['campaigns']
+    is_pct = cp['discount_value'].astype(str).str.contains('%')
+    cp['discount_value'] = pd.to_numeric(cp['discount_value'].astype(str).str.replace('%', ''), errors='coerce')
+    cp.loc[is_pct, 'discount_value'] = cp.loc[is_pct, 'discount_value'] / 100
 
-        # Ensure silver bucket
-        if not client.bucket_exists(SILVER_BUCKET):
-            client.make_bucket(SILVER_BUCKET)
-            logger.info("Tao bucket: silver")
+    # Toàn vẹn tham chiếu
+    s, it = tables['sales'], tables['sale_items']
+    n = len(s)
+    tables['sales'] = s = s[s['customer_id'].isin(tables['customers']['customer_id'])]
+    if len(s) != n:
+        logger.warning(f"  bo {n - len(s)} sale khong co customer")
+    n = len(it)
+    it = it[it['sale_id'].isin(s['sale_id']) & it['product_id'].isin(tables['products']['product_id'])]
+    tables['sale_items'] = it
+    if len(it) != n:
+        logger.warning(f"  bo {n - len(it)} item mo coi")
 
-        for csv_file, config in TABLE_CONFIG.items():
-            logger.info(f"Xu ly: {csv_file}")
-            try:
-                df = read_csv_from_minio(client, BRONZE_BUCKET, f'latest/{csv_file}')
-                logger.info(f"  Doc {len(df)} ban ghi")
-                df = clean_dataframe(df, config)
-                logger.info(f"  Sau khi clean: {len(df)} ban ghi")
-
-                # Upload Silver
-                table_name = config['table']
-                upload_parquet(client, df, SILVER_BUCKET, f'latest/{table_name}.parquet')
-                logger.info(f"  Saved to silver: {table_name}.parquet")
-
-            except Exception as e:
-                logger.warning(f"  Khong the xu ly {csv_file}: {e}")
-
-        logger.info("=== Hoan thanh: Bronze → Silver ===")
-
-    except Exception as e:
-        logger.error(f"Loi stage Silver: {e}")
-        sys.exit(1)
+    for name, df in tables.items():
+        lake.put_parquet(SILVER, name, df)
+    logger.info(f"=== Hoan thanh: {len(tables)} bang -> Silver ===")
 
 
 if __name__ == '__main__':
-    main()
-
+    try:
+        main()
+    except Exception as e:
+        logger.error(f"Loi stage Silver: {e}")
+        sys.exit(1)

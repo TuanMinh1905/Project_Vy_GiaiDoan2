@@ -25,9 +25,11 @@ ml-pipeline/models/*.joblib
 # Data files (raw CSVs quá lớn, không push)
 # raw_data/*.csv  <- để lại vì cần track
 
-# SQLite database (generated)
-data-pipeline/data/*.db
+# SQLite database & Local Data Lake (generated)
+data-pipeline/data/
 *.db
+*.db-shm
+*.db-wal
 
 # MinIO data volumes
 minio-data/
@@ -46,4 +48,6 @@ desktop.ini
 # Build artifacts
 build/
 out/
+desktop-app/out/
+desktop-app/dist/
 

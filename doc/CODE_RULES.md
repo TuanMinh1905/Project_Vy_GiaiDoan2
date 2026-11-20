@@ -242,8 +242,11 @@ if __name__ == "__main__":
 6. **Luôn update SUMMARY.md** sau task lớn
 
 
-## Rule: Khoi chay Electron
+## Rule: Khoi chay Electron & Ket noi SQLite
 - Khong sua node_modules/electron/index.js, khong doi sang ESM cho main process.
 - Moi lenh chay Electron phai dam bao ELECTRON_RUN_AS_NODE khong duoc dat.
 - Xac nhan 2 buoc: dung doubleConfirm(confirm, {...}) cua ConfirmDialog; hook useConfirm tra ve { confirm, confirmProps }.
 - Class dung chung: .cvy-card, .cvy-input, .cvy-btn-primary, .cvy-badge.
+- Truy van SQLite: dat tai `desktop-app/src/main/db.js` dung `better-sqlite3` (readonly mode cho Dashboard), goi qua IPC `get-dashboard-data` va `reload-database` sau khi chay pipeline/ML.
+- Native module: neu cai them package hoac doi phien ban Electron, chay `npx electron-builder install-app-deps` trong `desktop-app` de rebuild `better-sqlite3`.
+- Data Lake (`data-pipeline/lake.py`): tu dong dung MinIO neu `localhost:9000` mo, nguoc lai fallback ve `data-pipeline/data/lake/` de pipeline luon chay duoc doc lap.
