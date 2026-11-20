@@ -60,6 +60,9 @@ ipcMain.on('window-close', e => BrowserWindow.fromWebContents(e.sender)?.close()
 ipcMain.handle('get-dashboard-data', async (e, { tab }) => {
   try {
     if (!isReady()) {
+      openDatabase()
+    }
+    if (!isReady()) {
       return { success: false, error: 'Chưa có dữ liệu. Hãy chạy Pipeline trước.' }
     }
     const QUERIES = {
@@ -105,6 +108,10 @@ ipcMain.handle('run-pipeline', async (event, { stage }) => {
     if (!script || !existsSync(script)) {
       return resolve({ success: false, error: `Script "${stage}" khong tim thay` })
     }
+    // Đóng kết nối SQLite trước khi Python ghi đè file trên Windows
+    if (stage === 'sqlite' || stage === 'all' || stage === 'ml') {
+      closeDatabase()
+    }
     const proc = spawn('python', [script], {
       cwd: PROJECT_ROOT,
       env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
@@ -119,8 +126,8 @@ ipcMain.handle('run-pipeline', async (event, { stage }) => {
       event.sender.send('pipeline-progress', { stage, log: d.toString() })
     })
     proc.on('close', code => {
-      // Reopen DB sau khi pipeline/ML chạy xong để lấy data mới
-      if (code === 0 && (stage === 'sqlite' || stage === 'all' || stage === 'ml')) {
+      // Mở lại DB sau khi pipeline/ML chạy xong
+      if (stage === 'sqlite' || stage === 'all' || stage === 'ml') {
         openDatabase()
       }
       resolve({ success: code === 0, stdout, stderr, exitCode: code })

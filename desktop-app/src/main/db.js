@@ -13,9 +13,14 @@ let db = null
 export function openDatabase() {
   closeDatabase()
   if (!existsSync(DB_PATH)) return false
-  db = new Database(DB_PATH, { readonly: true, fileMustExist: true })
-  db.pragma('journal_mode = WAL')
-  return true
+  try {
+    db = new Database(DB_PATH, { readonly: true, fileMustExist: true })
+    return true
+  } catch (err) {
+    console.error('Loi mo SQLite:', err.message)
+    db = null
+    return false
+  }
 }
 
 export function closeDatabase() {
