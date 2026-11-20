@@ -1,0 +1,48 @@
+# Analytics Platform - Desktop App
+# .gitignore
+
+# Node / Electron
+node_modules/
+desktop-app/node_modules/
+dist/
+dist-electron/
+*.log
+.env
+.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+*.egg-info/
+ml-pipeline/models/*.pkl
+ml-pipeline/models/*.joblib
+
+# Data files (raw CSVs quá lớn, không push)
+# raw_data/*.csv  <- để lại vì cần track
+
+# SQLite database (generated)
+data-pipeline/data/*.db
+*.db
+
+# MinIO data volumes
+minio-data/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+build/
+out/

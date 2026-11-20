@@ -1,0 +1,113 @@
+# .agent — Quy tắc tự động sau mỗi task quan trọng
+# Dự án: Analytics Platform — Thời trang E-Commerce
+# Phiên bản: 1.0 | Cập nhật: 20/11/2026
+
+---
+
+## MỤC ĐÍCH
+
+File này định nghĩa 4 hành động PHẢI thực hiện sau mỗi khi hoàn thành một task quan trọng.
+Agent (AI) sẽ tự động thực hiện theo thứ tự dưới đây mỗi khi task lớn hoàn tất.
+
+---
+
+## QUY TẮC 1 — AUTO PUSH GITHUB
+
+Sau mỗi task quan trọng, chạy lệnh sau để push lên GitHub:
+
+```bash
+git add -A
+git commit -m "<commit message bằng tiếng Việt, không có icon, không có emoji>"
+git push origin main
+```
+
+### Quy tắc commit message:
+- Viết bằng tiếng Việt
+- Không dùng icon, emoji, ký tự đặc biệt
+- Format: `[Phạm vi] Mô tả ngắn gọn`
+  - Ví dụ: `[Pipeline] Hoàn thành Bronze to Silver cho data thời trang`
+  - Ví dụ: `[UI] Thêm tab Overview Dashboard với Recharts`
+  - Ví dụ: `[Setup] Khởi tạo Electron + React skeleton`
+- Nếu có nhiều thay đổi: dùng multiline với `git commit -m "tiêu đề" -m "chi tiết"`
+
+---
+
+## QUY TẮC 2 — UPDATE SUMMARY.md
+
+Sau mỗi task quan trọng, cập nhật file `doc/SUMMARY.md` với:
+
+1. **Trạng thái hiện tại** của toàn bộ hệ thống
+2. **Những gì đã làm** (theo từng phase)
+3. **Những gì chưa làm** (backlog)
+4. **Cấu trúc thư mục** (cập nhật mới nhất)
+5. **Cách chạy dự án** (commands cụ thể)
+6. **Các file quan trọng** và vai trò của chúng
+
+Mục đích: Conversation AI mới đọc SUMMARY.md là hiểu ngay toàn bộ hệ thống
+mà không cần đọc hết code.
+
+---
+
+## QUY TẮC 3 — UPDATE RULE TAB/CONTAINER (TRÊN UI)
+
+Mỗi Tab và Container lớn trong Desktop App phải có nút "Quy tắc" (?) hiển thị
+ngay trên giao diện. Nút này khi bấm sẽ mở modal/tooltip mô tả:
+
+1. **Tab/Container này làm gì** — mục đích tổng quan
+2. **Dữ liệu nào hiển thị** — đến từ đâu, format gì
+3. **Các bước sử dụng đúng** — step by step
+4. **Các phím tắt** — keyboard shortcuts trong tab này
+5. **Lưu ý đặc biệt** — những điều cần chú ý khi dùng
+
+Quy tắc UI:
+- Nút có dạng: icon dấu hỏi (?) nhỏ, màu xám nhạt, góc phải của header tab
+- Hover: hiện tooltip tóm tắt ngắn
+- Click: mở modal đầy đủ
+- Nút không chiếm không gian, không gây rối layout
+
+---
+
+## QUY TẮC 4 — UPDATE CODE_RULES.md
+
+Sau mỗi task quan trọng, cập nhật `doc/CODE_RULES.md` với:
+
+1. **Naming conventions** — tên file, component, biến, hàm
+2. **Cấu trúc component** — cách tổ chức React component
+3. **State management** — cách quản lý state
+4. **API pattern** — cách gọi Electron IPC, Python subprocess
+5. **Styling rules** — class Tailwind nào dùng cho gì
+6. **Error handling** — cách xử lý lỗi
+7. **Quy tắc Git** — khi nào commit, format commit
+
+---
+
+## CHECKLIST SAU MỖI TASK LỚN
+
+```
+[ ] 1. Git: add + commit (tiếng Việt, không icon) + push origin main
+[ ] 2. doc/SUMMARY.md: cập nhật trạng thái, cấu trúc, cách chạy
+[ ] 3. UI: kiểm tra/thêm nút Quy tắc (?) cho Tab/Container mới
+[ ] 4. doc/CODE_RULES.md: cập nhật rule mới nếu có pattern mới
+```
+
+---
+
+## DANH SÁCH TASK QUAN TRỌNG (cần trigger 4 rules trên)
+
+- Khởi tạo project structure
+- Hoàn thành một Pipeline stage (Bronze/Silver/Gold/SQLite)
+- Tạo mới một Tab/Page trong Desktop App
+- Tạo mới một Dashboard template
+- Tích hợp ML model mới
+- Thay đổi kiến trúc hệ thống
+- Sửa bug quan trọng ảnh hưởng đến data flow
+
+---
+
+## CẤU HÌNH GITHUB
+
+```
+Remote: https://github.com/TuanMinh1905/Project_Vy_GiaiDoan2.git
+Branch chính: main
+Tham khảo Phase 1: https://github.com/TuanMinh1905/Project_ChiVy_GiaiDoan1
+```
