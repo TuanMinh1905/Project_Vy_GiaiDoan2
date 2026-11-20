@@ -46,3 +46,4 @@ export function KPICard({ title, value, change, unit, icon: Icon, loading }) {
     </div>
   )
 }
+

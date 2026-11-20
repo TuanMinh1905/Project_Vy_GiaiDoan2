@@ -56,3 +56,4 @@ export function calcChange(current, previous) {
   if (!previous || previous === 0) return null
   return ((current - previous) / previous) * 100
 }
+

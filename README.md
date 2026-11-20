@@ -77,3 +77,4 @@ Pr_Vy/
 
 ## Quy tắc commit
 Format: `[Phạm vi] Mô tả tiếng Việt` (không emoji, không icon)
+

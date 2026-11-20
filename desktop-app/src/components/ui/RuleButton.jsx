@@ -129,3 +129,4 @@ export function RuleButton({ ruleKey, className }) {
     </>
   )
 }
+

@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== BASE STYLES ===== */
+@layer base {
+  * {
+    @apply border-gray-200 dark:border-gray-700;
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  body {
+    @apply bg-white text-gray-900 dark:bg-surface-dark dark:text-gray-100;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    /* Electron: tắt text selection cho UI elements */
+    user-select: none;
+  }
+
+  /* Cho phép text selection trong data areas */
+  .selectable {
+    user-select: text;
+  }
+}
+
+/* ===== SCROLLBAR CUSTOM ===== */
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+/* ===== RESIZABLE PANEL HANDLE ===== */
+[data-panel-resize-handle-id] {
+  @apply bg-gray-200 dark:bg-gray-700 hover:bg-brand-500 transition-colors;
+}
+[data-panel-resize-handle-id][data-resize-handle-active] {
+  @apply bg-brand-500;
+}
+
+/* ===== DRAG REGION (Electron titlebar) ===== */
+.drag-region {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* ===== FADE IN ANIMATION ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ===== CUSTOM PREFIX: .cvy- ===== */
+.cvy-card {
+  @apply bg-white dark:bg-surface-dark-2 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm;
+}
+.cvy-badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+
+.cvy-input { @apply bg-gray-800 border border-gray-700 rounded-lg text-gray-200 outline-none focus:border-purple-500; }
+.cvy-btn-primary { @apply px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors; }

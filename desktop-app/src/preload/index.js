@@ -1,8 +1,7 @@
-// Electron Preload Script
-// Vai trò: Cầu nối an toàn giữa Main process và Renderer (React)
-// Chỉ expose những API cần thiết — không expose toàn bộ Node
+// Preload script — electron-vite layout
+// Cầu nối an toàn giữa Main process và Renderer (React)
 
-const { contextBridge, ipcRenderer } = require('electron')
+import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electron', {
   // Dashboard data
@@ -11,9 +10,9 @@ contextBridge.exposeInMainWorld('electron', {
   // Pipeline control
   runPipeline: (params) => ipcRenderer.invoke('run-pipeline', params),
   onPipelineProgress: (callback) => {
-    ipcRenderer.on('pipeline-progress', (event, data) => callback(data))
-    // Trả về cleanup function
-    return () => ipcRenderer.removeAllListeners('pipeline-progress')
+    const handler = (event, data) => callback(data)
+    ipcRenderer.on('pipeline-progress', handler)
+    return () => ipcRenderer.removeListener('pipeline-progress', handler)
   },
 
   // Snapshots
@@ -27,3 +26,4 @@ contextBridge.exposeInMainWorld('electron', {
   // Utilities
   openFolder: (path) => ipcRenderer.invoke('open-folder', path),
 })
+

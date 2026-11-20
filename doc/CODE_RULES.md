@@ -240,3 +240,10 @@ if __name__ == "__main__":
 4. **Không bỏ qua 2x confirm** — mọi hành động quan trọng
 5. **Không push code chưa chạy được** lên main
 6. **Luôn update SUMMARY.md** sau task lớn
+
+
+## Rule: Khoi chay Electron
+- Khong sua node_modules/electron/index.js, khong doi sang ESM cho main process.
+- Moi lenh chay Electron phai dam bao ELECTRON_RUN_AS_NODE khong duoc dat.
+- Xac nhan 2 buoc: dung doubleConfirm(confirm, {...}) cua ConfirmDialog; hook useConfirm tra ve { confirm, confirmProps }.
+- Class dung chung: .cvy-card, .cvy-input, .cvy-btn-primary, .cvy-badge.

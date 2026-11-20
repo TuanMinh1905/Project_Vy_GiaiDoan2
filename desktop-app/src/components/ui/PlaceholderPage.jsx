@@ -23,3 +23,4 @@ export function PlaceholderPage({ title, ruleKey, description }) {
     </div>
   )
 }
+

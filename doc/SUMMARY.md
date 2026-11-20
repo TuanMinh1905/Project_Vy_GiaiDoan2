@@ -137,3 +137,11 @@ python predict_bestsellers.py
 | Nút "Quy tắc" (?) trên mỗi Tab | Người mới/AI mới đọc hiểu hệ thống ngay trên UI |
 | Confirm dialog 2 lần | Tránh thao tác nhầm cho các hành động quan trọng |
 | Resizable containers | UI linh hoạt, responsive |
+
+
+## Cap nhat: Desktop App chay duoc (Electron + electron-vite)
+
+- Da hoan thanh 7 tab: Overview, Products, Customers, Geography, Channels, MLForecast, PipelineControl (du lieu mock, chua noi SQLite).
+- Cach chay: run-app.bat (build + chay) hoac run-dev.bat (hot reload). Main process dung CommonJS do electron-vite build, KHONG them "type": "module".
+- LOI QUAN TRONG DA GAP: bien moi truong ELECTRON_RUN_AS_NODE=1 lam electron.exe chay nhu Node thuong, khien require('electron') tra ve chuoi duong dan va app.whenReady undefined. Cac file .bat da xoa bien nay. Neu chay tay trong terminal, phai xoa bien truoc (PowerShell: Remove-Item Env:ELECTRON_RUN_AS_NODE).
+- Viec con lai: noi SQLite (better-sqlite3) qua IPC get-dashboard-data, thay mock data bang data that.
