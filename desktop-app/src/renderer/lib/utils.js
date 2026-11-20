@@ -57,3 +57,29 @@ export function calcChange(current, previous) {
   return ((current - previous) / previous) * 100
 }
 
+/**
+ * Xuất mảng object ra file CSV và tự động tải xuống
+ */
+export function exportToCSV(rows, filename = 'export.csv') {
+  if (!rows || !rows.length) return
+  const headers = Object.keys(rows[0])
+  const csvLines = [
+    headers.join(','),
+    ...rows.map(row =>
+      headers.map(h => {
+        const val = row[h] == null ? '' : String(row[h]).replace(/"/g, '""')
+        return /[",\n]/.test(val) ? `"${val}"` : val
+      }).join(',')
+    ),
+  ]
+  const blob = new Blob(['\uFEFF' + csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', filename)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+

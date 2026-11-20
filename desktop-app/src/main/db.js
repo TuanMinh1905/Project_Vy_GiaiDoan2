@@ -211,7 +211,7 @@ export function queryChannels() {
 }
 
 // ============================================================
-// ML FORECAST
+// ML 1: FORECAST BESTSELLERS
 // ============================================================
 export function queryML() {
   const result = { predictions: [], backtest: [], modelInfo: null }
@@ -228,6 +228,140 @@ export function queryML() {
   if (tableExists('ml_model_info')) {
     result.modelInfo = db.prepare('SELECT * FROM ml_model_info LIMIT 1').get() || null
   }
+  return result
+}
+
+// ============================================================
+// ML 2: CUSTOMER CLUSTERING (K-MEANS + PCA 2D)
+// ============================================================
+export function queryMLClustering() {
+  const result = { modelInfo: null, kScores: [], summary: [], customers: [] }
+  if (!db) return result
+
+  if (tableExists('ml_cluster_info')) {
+    result.modelInfo = db.prepare('SELECT * FROM ml_cluster_info LIMIT 1').get() || null
+  }
+  if (tableExists('ml_cluster_k_scores')) {
+    result.kScores = db.prepare('SELECT * FROM ml_cluster_k_scores ORDER BY k').all()
+  }
+  if (tableExists('ml_cluster_summary')) {
+    result.summary = db.prepare('SELECT * FROM ml_cluster_summary ORDER BY avg_revenue DESC').all()
+  }
+  if (tableExists('ml_customer_clusters')) {
+    result.customers = db.prepare('SELECT * FROM ml_customer_clusters ORDER BY total_revenue DESC').all()
+  }
+  return result
+}
+
+// ============================================================
+// ML 3: HYBRID PRODUCT RECOMMENDATION (2-WAY)
+// ============================================================
+export function queryMLRecommend(params = {}) {
+  const result = {
+    modelInfo: null,
+    customers: [],
+    products: [],
+    selectedCustomerId: null,
+    customerProfile: null,
+    customerHistory: [],
+    customerRecs: [],
+    selectedProductId: null,
+    selectedProduct: null,
+    productRecs: [],
+    topCombos: [],
+  }
+  if (!db) return result
+
+  if (tableExists('ml_recommend_info')) {
+    result.modelInfo = db.prepare('SELECT * FROM ml_recommend_info LIMIT 1').get() || null
+  }
+  if (!tableExists('ml_customer_recommendations') || !tableExists('ml_product_affinities')) {
+    return result
+  }
+
+  // Danh sách khách hàng đã mua (ưu tiên lấy thêm tên cụm từ ml_customer_clusters nếu có)
+  if (tableExists('ml_customer_clusters')) {
+    result.customers = db.prepare(`
+      SELECT customer_id, country, age_range, order_count,
+             ROUND(total_revenue, 2) as total_revenue,
+             ROUND(avg_order_value, 2) as avg_order_value,
+             CAST(recency_days AS INTEGER) as recency_days,
+             discount_pct, preferred_channel, fav_category,
+             segment, cluster_name, badge_color
+      FROM ml_customer_clusters
+      ORDER BY total_revenue DESC
+    `).all()
+  } else if (tableExists('gold_customers')) {
+    result.customers = db.prepare(`
+      SELECT customer_id, country, age_range, order_count,
+             ROUND(total_revenue, 2) as total_revenue,
+             ROUND(avg_order_value, 2) as avg_order_value,
+             CAST(recency_days AS INTEGER) as recency_days,
+             segment, segment as cluster_name
+      FROM gold_customers WHERE order_count > 0
+      ORDER BY total_revenue DESC
+    `).all()
+  }
+
+  // Danh sách 500 sản phẩm
+  if (tableExists('gold_products')) {
+    result.products = db.prepare(`
+      SELECT product_id, product_name, category, brand, color, size, gender,
+             ROUND(catalog_price, 2) as catalog_price,
+             CAST(total_quantity AS INTEGER) as total_quantity,
+             ROUND(total_revenue, 2) as total_revenue,
+             CAST(order_count AS INTEGER) as order_count,
+             ROUND(margin_pct, 1) as margin_pct,
+             CAST(stock_quantity AS INTEGER) as stock_quantity
+      FROM gold_products
+      ORDER BY total_quantity DESC, product_id ASC
+    `).all()
+  }
+
+  // Khách hàng đang chọn
+  const custId = params.customerId ? Number(params.customerId) : (result.customers[0]?.customer_id || null)
+  result.selectedCustomerId = custId
+  if (custId) {
+    result.customerProfile = result.customers.find(c => c.customer_id === custId) || null
+    if (tableExists('gold_sales_items')) {
+      result.customerHistory = db.prepare(`
+        SELECT sale_id, sale_date, product_id, product_name, category, color, size,
+               CAST(quantity AS INTEGER) as quantity,
+               ROUND(unit_price, 2) as unit_price,
+               ROUND(revenue, 2) as revenue,
+               discount_applied
+        FROM gold_sales_items
+        WHERE customer_id = ?
+        ORDER BY sale_date DESC, sale_id DESC
+      `).all(custId)
+    }
+    result.customerRecs = db.prepare(`
+      SELECT * FROM ml_customer_recommendations
+      WHERE customer_id = ?
+      ORDER BY rank ASC
+    `).all(custId)
+  }
+
+  // Sản phẩm đang chọn
+  const prodId = params.productId ? Number(params.productId) : (result.products[0]?.product_id || null)
+  result.selectedProductId = prodId
+  if (prodId) {
+    result.selectedProduct = result.products.find(p => p.product_id === prodId) || null
+    result.productRecs = db.prepare(`
+      SELECT * FROM ml_product_affinities
+      WHERE source_product_id = ?
+      ORDER BY rank ASC
+    `).all(prodId)
+  }
+
+  // Top cặp sản phẩm hay mua kèm toàn cửa hàng
+  result.topCombos = db.prepare(`
+    SELECT * FROM ml_product_affinities
+    WHERE rank = 1
+    ORDER BY co_occurrence DESC, lift DESC, match_score DESC
+    LIMIT 12
+  `).all()
+
   return result
 }
 

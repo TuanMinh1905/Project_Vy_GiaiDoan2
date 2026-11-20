@@ -137,7 +137,7 @@ Mỗi Tab phải hỗ trợ các phím tắt phổ biến:
 | `Ctrl+E` | Export CSV |
 | `Ctrl+F` | Focus vào filter/search |
 | `Ctrl+D` | Toggle Dark/Light mode |
-| `Ctrl+1..6` | Chuyển tab theo số |
+| `Ctrl+1..9` | Chuyển tab theo số (1-5: BI Dashboards, 6-8: Machine Learning, 9: Pipeline Control) |
 | `Escape` | Đóng modal/dialog |
 | `Ctrl+Z` | Undo (nếu có) |
 
@@ -250,3 +250,6 @@ if __name__ == "__main__":
 - Truy van SQLite: dat tai `desktop-app/src/main/db.js` dung `better-sqlite3` (readonly mode cho Dashboard), goi qua IPC `get-dashboard-data` va `reload-database` sau khi chay pipeline/ML.
 - Native module: neu cai them package hoac doi phien ban Electron, chay `npx electron-builder install-app-deps` trong `desktop-app` de rebuild `better-sqlite3`.
 - Data Lake (`data-pipeline/lake.py`): tu dong dung MinIO neu `localhost:9000` mo, nguoc lai fallback ve `data-pipeline/data/lake/` de pipeline luon chay duoc doc lap.
+- Machine Learning Pipeline (`ml-pipeline/`):
+  - `run_all_ml.py` chay tuan tu 3 mo hinh (`predict_bestsellers.py`, `cluster_customers.py`, `recommend_products.py`), duoc goi qua IPC `run-pipeline` voi `stage: 'ml'` tu Pipeline Control.
+  - Moi tab ML (`MLForecast`, `MLClustering`, `MLRecommend`) goi IPC `run-pipeline` voi stage rieng (`'ml_forecast'`, `'ml_cluster'`, `'ml_recommend'`) kem xac nhan 2 buoc (`doubleConfirm`), va Electron main process tu dong `closeDatabase()` truoc khi ghi SQLite tren Windows va `openDatabase()` ngay sau khi tien trinh ket thuc.

@@ -5,7 +5,7 @@ import React from 'react'
 import {
   LayoutDashboard, Package, Users, Globe, Radio,
   BrainCircuit, Settings2, ChevronLeft, ChevronRight, Moon, Sun,
-  BarChart3, Cpu, Terminal
+  BarChart3, Cpu, Terminal, Network, Sparkles
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -30,14 +30,16 @@ const NAV_GROUPS = [
   {
     id: 'ml',
     title: 'MACHINE LEARNING',
-    subtitle: 'AI Dự báo',
-    badge: 'AI',
+    subtitle: 'AI Dự báo & Gợi ý',
+    badge: '3 AI',
     groupIcon: Cpu,
     accentText: 'text-emerald-400',
     activeClass: 'bg-emerald-500/20 text-emerald-300 border-r-2 border-emerald-400 font-medium',
     dotColor: 'bg-emerald-400',
     items: [
-      { key: 'mlforecast', label: 'ML Dự Đoán', icon: BrainCircuit, shortcut: '6', tag: 'RF' },
+      { key: 'mlforecast',   label: 'ML Dự Đoán',     icon: BrainCircuit, shortcut: '6', tag: 'RF' },
+      { key: 'mlclustering', label: 'ML Phân Cụm KH', icon: Network,      shortcut: '7', tag: 'KM' },
+      { key: 'mlrecommend',  label: 'ML Gợi Ý SP',    icon: Sparkles,     shortcut: '8', tag: 'REC' },
     ],
   },
   {
@@ -50,7 +52,7 @@ const NAV_GROUPS = [
     activeClass: 'bg-amber-500/20 text-amber-300 border-r-2 border-amber-400 font-medium',
     dotColor: 'bg-amber-400',
     items: [
-      { key: 'pipeline', label: 'Pipeline Control', icon: Settings2, shortcut: '7', tag: 'ETL' },
+      { key: 'pipeline', label: 'Pipeline Control', icon: Settings2, shortcut: '9', tag: 'ETL' },
     ],
   },
 ]

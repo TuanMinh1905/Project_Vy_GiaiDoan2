@@ -16,15 +16,19 @@ import Customers from '@/pages/Customers'
 import Geography from '@/pages/Geography'
 import Channels from '@/pages/Channels'
 import MLForecast from '@/pages/MLForecast'
+import MLClustering from '@/pages/MLClustering'
+import MLRecommend from '@/pages/MLRecommend'
 
 const TABS = {
-  overview:  <Overview />,
-  products:  <Products />,
-  customers: <Customers />,
-  geography: <Geography />,
-  channels:  <Channels />,
-  mlforecast:<MLForecast />,
-  pipeline:  <PipelineControl />,
+  overview:     <Overview />,
+  products:     <Products />,
+  customers:    <Customers />,
+  geography:    <Geography />,
+  channels:     <Channels />,
+  mlforecast:   <MLForecast />,
+  mlclustering: <MLClustering />,
+  mlrecommend:  <MLRecommend />,
+  pipeline:     <PipelineControl />,
 }
 
 const TAB_KEYS = Object.keys(TABS)
@@ -43,7 +47,9 @@ export default function App() {
     'ctrl+4': () => setActiveTab('geography'),
     'ctrl+5': () => setActiveTab('channels'),
     'ctrl+6': () => setActiveTab('mlforecast'),
-    'ctrl+7': () => setActiveTab('pipeline'),
+    'ctrl+7': () => setActiveTab('mlclustering'),
+    'ctrl+8': () => setActiveTab('mlrecommend'),
+    'ctrl+9': () => setActiveTab('pipeline'),
     'escape': () => {}, // handled by modals
   })
 

@@ -7,6 +7,7 @@ import {
   openDatabase, closeDatabase, isReady, getDbPath,
   queryOverview, queryProducts, queryCustomers,
   queryGeography, queryChannels, queryML,
+  queryMLClustering, queryMLRecommend,
 } from './db.js'
 
 // ===== CONFIG =====
@@ -57,8 +58,9 @@ ipcMain.on('window-maximize', e => {
 ipcMain.on('window-close', e => BrowserWindow.fromWebContents(e.sender)?.close())
 
 // ===== IPC: Dashboard data =====
-ipcMain.handle('get-dashboard-data', async (e, { tab }) => {
+ipcMain.handle('get-dashboard-data', async (e, params = {}) => {
   try {
+    const { tab } = params
     if (!isReady()) {
       openDatabase()
     }
@@ -72,10 +74,12 @@ ipcMain.handle('get-dashboard-data', async (e, { tab }) => {
       geography: queryGeography,
       channels: queryChannels,
       mlforecast: queryML,
+      mlclustering: queryMLClustering,
+      mlrecommend: queryMLRecommend,
     }
     const fn = QUERIES[tab]
     if (!fn) return { success: false, error: `Tab không hợp lệ: ${tab}` }
-    const data = fn()
+    const data = fn(params)
     if (!data) return { success: false, error: 'Không tìm thấy bảng dữ liệu. Hãy chạy Pipeline.' }
     return { success: true, data }
   } catch (err) {
@@ -97,19 +101,23 @@ ipcMain.handle('reload-database', async () => {
 ipcMain.handle('run-pipeline', async (event, { stage }) => {
   return new Promise(resolve => {
     const scriptMap = {
-      bronze: join(PROJECT_ROOT, 'data-pipeline/jobs/01_ingest_bronze.py'),
-      silver: join(PROJECT_ROOT, 'data-pipeline/jobs/02_bronze_to_silver.py'),
-      gold:   join(PROJECT_ROOT, 'data-pipeline/jobs/03_silver_to_gold.py'),
-      sqlite: join(PROJECT_ROOT, 'data-pipeline/jobs/04_gold_to_sqlite.py'),
-      all:    join(PROJECT_ROOT, 'data-pipeline/run_all.py'),
-      ml:     join(PROJECT_ROOT, 'ml-pipeline/predict_bestsellers.py'),
+      bronze:       join(PROJECT_ROOT, 'data-pipeline/jobs/01_ingest_bronze.py'),
+      silver:       join(PROJECT_ROOT, 'data-pipeline/jobs/02_bronze_to_silver.py'),
+      gold:         join(PROJECT_ROOT, 'data-pipeline/jobs/03_silver_to_gold.py'),
+      sqlite:       join(PROJECT_ROOT, 'data-pipeline/jobs/04_gold_to_sqlite.py'),
+      all:          join(PROJECT_ROOT, 'data-pipeline/run_all.py'),
+      ml:           join(PROJECT_ROOT, 'ml-pipeline/run_all_ml.py'),
+      ml_forecast:  join(PROJECT_ROOT, 'ml-pipeline/predict_bestsellers.py'),
+      ml_cluster:   join(PROJECT_ROOT, 'ml-pipeline/cluster_customers.py'),
+      ml_recommend: join(PROJECT_ROOT, 'ml-pipeline/recommend_products.py'),
     }
     const script = scriptMap[stage]
     if (!script || !existsSync(script)) {
       return resolve({ success: false, error: `Script "${stage}" khong tim thay` })
     }
+    const isDbWriteStage = ['sqlite', 'all', 'ml', 'ml_forecast', 'ml_cluster', 'ml_recommend'].includes(stage)
     // Đóng kết nối SQLite trước khi Python ghi đè file trên Windows
-    if (stage === 'sqlite' || stage === 'all' || stage === 'ml') {
+    if (isDbWriteStage) {
       closeDatabase()
     }
     const proc = spawn('python', [script], {
@@ -127,7 +135,7 @@ ipcMain.handle('run-pipeline', async (event, { stage }) => {
     })
     proc.on('close', code => {
       // Mở lại DB sau khi pipeline/ML chạy xong
-      if (stage === 'sqlite' || stage === 'all' || stage === 'ml') {
+      if (isDbWriteStage) {
         openDatabase()
       }
       resolve({ success: code === 0, stdout, stderr, exitCode: code })

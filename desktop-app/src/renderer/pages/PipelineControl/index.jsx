@@ -47,9 +47,9 @@ const STAGES = [
   {
     key: 'ml',
     step: 'STAGE 05',
-    label: 'ML Training',
-    script: 'predict_bestsellers.py',
-    desc: 'Huấn luyện Random Forest 300 cây, chạy Backtest và xuất dự báo 14 ngày tới',
+    label: 'ML Suite (3 Models)',
+    script: 'run_all_ml.py',
+    desc: 'Huấn luyện cả 3 mô hình ML: Dự báo Bán chạy (RF), Phân cụm KH (K-Means) & Gợi ý SP (Hybrid)',
     icon: BrainCircuit,
   },
 ]

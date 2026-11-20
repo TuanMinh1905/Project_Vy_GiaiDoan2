@@ -63,7 +63,12 @@ def main():
         # Giữ lại kết quả ML cũ (nếu có) để Dashboard không bị trống tới khi chạy ML lại
         if SQLITE_PATH.exists():
             old = sqlite3.connect(SQLITE_PATH)
-            for tbl in ('ml_predictions', 'ml_backtest', 'ml_model_info'):
+            ml_tables = (
+                'ml_predictions', 'ml_backtest', 'ml_model_info',
+                'ml_customer_clusters', 'ml_cluster_summary', 'ml_cluster_k_scores', 'ml_cluster_info',
+                'ml_customer_recommendations', 'ml_product_affinities', 'ml_recommend_info',
+            )
+            for tbl in ml_tables:
                 try:
                     pd.read_sql(f'SELECT * FROM {tbl}', old).to_sql(tbl, conn, if_exists='replace', index=False)
                 except Exception:

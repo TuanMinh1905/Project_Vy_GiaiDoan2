@@ -39,7 +39,7 @@ export default function MLForecast() {
     if (!confirmed) return
     setRunning(true)
     try {
-      const result = await window.electron?.runPipeline({ stage: 'ml' })
+      const result = await window.electron?.runPipeline({ stage: 'ml_forecast' })
       if (result?.success) {
         await window.electron?.reloadDatabase()
         await loadData()
