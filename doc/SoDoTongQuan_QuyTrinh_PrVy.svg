@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="156mm" height="208.52mm" viewBox="0 0 1200 1604" role="img" aria-labelledby="title desc">
+<title id="title">Sơ đồ tổng quan quy trình hệ thống Analytics Platform</title>
+<desc id="desc">Ba làn người vận hành, hệ thống Analytics Platform và người phân tích. Người vận hành chuẩn bị dữ liệu CSV và xác nhận chạy chuỗi. Hệ thống chạy Bronze, Silver, Gold, SQLite và học máy. Khi có lỗi, chuỗi dừng và người vận hành xử lý theo log rồi chạy lại. Khi chuỗi thành công, hệ thống mở lại kết nối SQLite. Người phân tích chọn tab, xem kết quả và cân nhắc quyết định kinh doanh.</desc>
+<rect x="0" y="0" width="1200" height="1604" fill="#ffffff"/>
+<rect x="11" y="11" width="1178" height="56" fill="#f3f3f3"/>
+<rect x="11" y="11" width="1178" height="1584" fill="none" stroke="#60646a" stroke-width="1.8"/>
+<path d="M11 67H1189 M332 11V1595 M864 11V1595" stroke="#60646a" stroke-width="1.8" fill="none"/>
+<text x="171.5" y="48" font-family="Arial, DejaVu Sans, sans-serif" font-size="29" font-weight="700" text-anchor="middle" fill="#24262a">Người vận hành</text>
+<text x="598" y="48" font-family="Arial, DejaVu Sans, sans-serif" font-size="29" font-weight="700" text-anchor="middle" fill="#24262a">Hệ thống Analytics Platform</text>
+<text x="1026.5" y="48" font-family="Arial, DejaVu Sans, sans-serif" font-size="29" font-weight="700" text-anchor="middle" fill="#24262a">Người phân tích</text>
+<rect x="371" y="245" width="454" height="656" fill="none" stroke="#60646a" stroke-width="1.8" stroke-dasharray="7 5"/>
+<text x="598" y="273" font-family="Arial, DejaVu Sans, sans-serif" font-size="27" font-weight="700" text-anchor="middle" fill="#24262a">Chuỗi ETL và học máy</text>
+<text x="598" y="300" font-family="Arial, DejaVu Sans, sans-serif" font-size="22" font-weight="400" text-anchor="middle" fill="#24262a">Chạy tuần tự và dừng khi có bước lỗi</text>
+<g id="bat-dau-den-tep-nguon"><polyline points="176.5,139 176.5,174" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="176.5,174 171.00,160.00 182.00,160.00" fill="#34363a"/></g>
+<g id="tep-nguon-den-chay"><polyline points="176.5,262 176.5,308" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="176.5,308 171.00,294.00 182.00,294.00" fill="#34363a"/></g>
+<g id="khoi-chay-chuoi"><polyline points="311,359.0 397,359.0" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="397,359.0 383.00,364.50 383.00,353.50" fill="#34363a"/></g>
+<g id="bronze-den-silver"><polyline points="598.0,399 598.0,433" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="598.0,433 592.50,419.00 603.50,419.00" fill="#34363a"/></g>
+<g id="silver-den-gold"><polyline points="598.0,513 598.0,547" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="598.0,547 592.50,533.00 603.50,533.00" fill="#34363a"/></g>
+<g id="gold-den-sqlite"><polyline points="598.0,627 598.0,661" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="598.0,661 592.50,647.00 603.50,647.00" fill="#34363a"/></g>
+<g id="sqlite-den-hoc-may"><polyline points="598.0,741 598.0,775" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="598.0,775 592.50,761.00 603.50,761.00" fill="#34363a"/></g>
+<g id="hoc-may-den-kiem-tra-ket-qua"><polyline points="598.0,878 598.0,935" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="598.0,935 592.50,921.00 603.50,921.00" fill="#34363a"/></g>
+<g id="nhanh-loi"><polyline points="460,1001.0 379,1001.0 379,1074" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="379,1074 373.50,1060.00 384.50,1060.00" fill="#34363a"/></g>
+<text x="418" y="989" font-family="Arial, DejaVu Sans, sans-serif" font-size="23" font-weight="700" text-anchor="middle" fill="#24262a">Không</text>
+<g id="loi-den-nguoi-van-hanh"><polyline points="350,1112.5 311,1112.5" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="311,1112.5 325.00,1107.00 325.00,1118.00" fill="#34363a"/></g>
+<g id="lap-chay-lai"><polyline points="42,1112.5 25,1112.5 25,359.0 42,359.0" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="42,359.0 28.00,364.50 28.00,353.50" fill="#34363a"/></g>
+<text x="43" y="725" font-family="Arial, DejaVu Sans, sans-serif" font-size="23" font-weight="400" text-anchor="start" fill="#24262a">Chạy lại</text>
+<g id="nhanh-thanh-cong"><polyline points="598.0,1067 598.0,1159" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="598.0,1159 592.50,1145.00 603.50,1145.00" fill="#34363a"/></g>
+<text x="618" y="1119" font-family="Arial, DejaVu Sans, sans-serif" font-size="23" font-weight="700" text-anchor="start" fill="#24262a">Có</text>
+<g id="mo-khai-thac"><polyline points="781,1202.0 890,1202.0" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="890,1202.0 876.00,1207.50 876.00,1196.50" fill="#34363a"/></g>
+<g id="yeu-cau-truy-van"><polyline points="1026.5,1245 1026.5,1303 799,1303" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="799,1303 813.00,1297.50 813.00,1308.50" fill="#34363a"/></g>
+<g id="tra-ket-qua"><polyline points="799,1352 1026.5,1352 1026.5,1391" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="1026.5,1391 1021.00,1377.00 1032.00,1377.00" fill="#34363a"/></g>
+<g id="hoan-tat"><polyline points="1026.5,1500 1026.5,1525" stroke="#34363a" stroke-width="2.45" fill="none" stroke-linejoin="round" stroke-linecap="round"/><polygon points="1026.5,1525 1021.00,1511.00 1032.00,1511.00" fill="#34363a"/></g>
+<g id="bat-dau">
+<ellipse cx="176.5" cy="115.0" rx="89.5" ry="24.0" fill="#f3f3f3" stroke="#34363a" stroke-width="2.2"/>
+<text x="176.5" y="123.32" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="700" text-anchor="middle" fill="#24262a">Bắt đầu</text>
+</g>
+<g id="tep-nguon">
+<rect x="42" y="174" width="269" height="88" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="176.5" y="209.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Đặt 7 tệp CSV</text>
+<text x="176.5" y="242.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">vào raw_data/</text>
+</g>
+<g id="chay-toan-bo">
+<rect x="42" y="308" width="269" height="102" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="176.5" y="334.0" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Chọn “Chạy toàn bộ”</text>
+<text x="176.5" y="367.0" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">ở Pipeline Control</text>
+<text x="176.5" y="400.0" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">và xác nhận hai bước</text>
+</g>
+<g id="bronze">
+<rect x="397" y="319" width="402" height="80" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="350.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#24262a">01  Bronze</text>
+<text x="598.0" y="383.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Lưu CSV và bản sao theo ngày</text>
+</g>
+<g id="silver">
+<rect x="397" y="433" width="402" height="80" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="464.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#24262a">02  Silver</text>
+<text x="598.0" y="497.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Chuẩn hóa và kiểm tra khóa</text>
+</g>
+<g id="gold">
+<rect x="397" y="547" width="402" height="80" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="578.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#24262a">03  Gold</text>
+<text x="598.0" y="611.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Tạo các bảng phân tích</text>
+</g>
+<g id="sqlite">
+<rect x="397" y="661" width="402" height="80" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="692.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#24262a">04  SQLite</text>
+<text x="598.0" y="725.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Nạp bảng Gold vào analytics.db</text>
+</g>
+<g id="hoc-may">
+<rect x="397" y="775" width="402" height="103" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="801.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="700" text-anchor="middle" fill="#24262a">05  Học máy</text>
+<text x="598.0" y="834.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Dự báo, phân cụm và gợi ý</text>
+<text x="598.0" y="867.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Ghi kết quả vào SQLite</text>
+</g>
+<g id="kiem-tra-ket-qua">
+<polygon points="598.0,935 736,1001.0 598.0,1067 460,1001.0" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="992.32" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">Chuỗi chạy</text>
+<text x="598.0" y="1026.32" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">thành công?</text>
+</g>
+<g id="thong-bao-loi">
+<rect x="350" y="1074" width="234" height="77" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="467.0" y="1104.0" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Dừng chuỗi</text>
+<text x="467.0" y="1137.0" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">và ghi lỗi vào log</text>
+</g>
+<g id="xu-ly-loi">
+<rect x="42" y="1074" width="269" height="77" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="176.5" y="1104.0" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Xem log và</text>
+<text x="176.5" y="1137.0" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">xử lý lỗi</text>
+</g>
+<g id="mo-lai-sqlite">
+<rect x="415" y="1159" width="366" height="86" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="1210.32" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">Mở lại kết nối SQLite</text>
+</g>
+<g id="chon-tab">
+<rect x="890" y="1159" width="273" height="86" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="1026.5" y="1193.32" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">Chọn tab BI</text>
+<text x="1026.5" y="1227.32" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">hoặc học máy</text>
+</g>
+<g id="truy-van-va-hien-thi">
+<rect x="397" y="1276" width="402" height="103" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="598.0" y="1301.82" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">Truy vấn SQLite</text>
+<text x="598.0" y="1335.82" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">Hiển thị dashboard BI</text>
+<text x="598.0" y="1369.82" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="400" text-anchor="middle" fill="#24262a">hoặc kết quả học máy</text>
+</g>
+<g id="doi-chieu-ket-qua">
+<rect x="890" y="1391" width="273" height="109" fill="#ffffff" stroke="#34363a" stroke-width="2.2"/>
+<text x="1026.5" y="1420.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Đối chiếu kết quả</text>
+<text x="1026.5" y="1453.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">Cân nhắc nhập hàng,</text>
+<text x="1026.5" y="1486.5" font-family="Arial, DejaVu Sans, sans-serif" font-size="25" font-weight="400" text-anchor="middle" fill="#24262a">chăm sóc và bán kèm</text>
+</g>
+<g id="ket-thuc">
+<ellipse cx="1026.5" cy="1549.0" rx="92.5" ry="24.0" fill="#f3f3f3" stroke="#34363a" stroke-width="2.2"/>
+<text x="1026.5" y="1557.32" font-family="Arial, DejaVu Sans, sans-serif" font-size="26" font-weight="700" text-anchor="middle" fill="#24262a">Kết thúc</text>
+</g>
+</svg>
